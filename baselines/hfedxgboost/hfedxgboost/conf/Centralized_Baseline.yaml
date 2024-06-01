@@ -6,6 +6,9 @@ defaults:
 n_estimators_client: ${xgboost_params_centralized.n_estimators}
 task_type: ${dataset.task.task_type}
 
+fit_gru:
+  learning_rate: 0.01
+
 XGBoost:
   _target_:  ${dataset.task.xgb._target_}
   objective: ${dataset.task.xgb.objective}

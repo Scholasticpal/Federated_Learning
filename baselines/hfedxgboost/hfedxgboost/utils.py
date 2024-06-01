@@ -22,7 +22,7 @@ from tqdm import tqdm
 from xgboost import XGBClassifier, XGBRegressor
 
 from hfedxgboost.dataset import load_single_dataset
-from hfedxgboost.models import CNN, fit_xgboost
+from hfedxgboost.models import CNN, fit_xgboost, fit_gru
 
 dataset_tasks = {
     "a9a": "BINARY",
@@ -32,6 +32,7 @@ dataset_tasks = {
     "cpusmall": "REG",
     "space_ga": "REG",
     "YearPredictionMSD": "REG",
+    "Bitbrains": "REG",
 }
 
 
@@ -101,7 +102,8 @@ def run_single_exp(
     x_train, y_train, x_test, y_test = load_single_dataset(
         task_type, dataset_name, train_ratio=config.dataset.train_ratio
     )
-    tree = fit_xgboost(config, task_type, x_train, y_train, n_estimators)
+    # tree = fit_xgboost(config, task_type, x_train, y_train, n_estimators)
+    tree = fit_gru(config, task_type, x_train, y_train)
     preds_train = tree.predict(x_train)
     result_train = evaluate(task_type, y_train, preds_train)
     preds_test = tree.predict(x_test)
@@ -212,12 +214,18 @@ def local_clients_performance(
     for i, trainloader in enumerate(trainloaders):
         for local_dataset in trainloader:
             local_x_train, local_y_train = local_dataset[0], local_dataset[1]
-            tree = fit_xgboost(
+            # tree = fit_xgboost(
+            #     config,
+            #     task_type,
+            #     local_x_train,
+            #     local_y_train,
+            #     500 // config.client_num,
+            # )
+            tree = fit_gru(
                 config,
                 task_type,
                 local_x_train,
-                local_y_train,
-                500 // config.client_num,
+                local_y_train,                
             )
 
             preds_train = tree.predict(local_x_train)
@@ -249,16 +257,20 @@ def single_tree_prediction(
         None: If the provided n_tree is larger than the total number of trees
         in the tree object, and a warning message is printed.
     """
-    num_t = len(tree.get_booster().get_dump())
-    if n_tree > num_t:
-        print(
-            "The tree index to be extracted is larger than the total number of trees."
-        )
-        return None
+    # num_t = len(tree.get_booster().get_dump())
+    # if n_tree > num_t:
+    #     print(
+    #         "The tree index to be extracted is larger than the total number of trees."
+    #     )
+    #     return None
+    # return tree.predict(
+    #     dataset, iteration_range=(n_tree, n_tree + 1), output_margin=True
+    # )
 
-    return tree.predict(
-        dataset, iteration_range=(n_tree, n_tree + 1), output_margin=True
-    )
+    with torch.no_grad():
+        tree.eval()
+        outputs = tree(torch.tensor(dataset).float())
+        return outputs.cpu().numpy()
 
 
 def single_tree_preds_from_each_client(

@@ -9,3 +9,5 @@ alpha: 5
 gamma: 10
 num_parallel_tree: 1
 min_child_weight: 5
+fit_gru:
+  learning_rate: 0.01

@@ -13,6 +13,9 @@ n_estimators_client: ${clients.n_estimators_client}
 task_type: ${dataset.task.task_type}
 client_num: ${clients.client_num}
 
+fit_gru:
+  learning_rate: 0.01
+
 XGBoost:
   _target_:  ${dataset.task.xgb._target_}
   objective: ${dataset.task.xgb.objective}

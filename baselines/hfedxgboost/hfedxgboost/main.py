@@ -65,6 +65,10 @@ def main(cfg: DictConfig) -> None:
             cfg.dataset.dataset_name,
             train_ratio=cfg.dataset.train_ratio,
         )
+        print("#"*10, x_train)
+        print("$"*10, x_train.shape)
+        print("*"*10, y_train)
+        print("@"*10, y_train.shape)
 
         trainloaders, valloaders, testloader = divide_dataset_between_clients(
             TensorDataset(torch.from_numpy(x_train), torch.from_numpy(y_train)),
@@ -73,6 +77,7 @@ def main(cfg: DictConfig) -> None:
             pool_size=cfg.clients.client_num,
             val_ratio=cfg.val_ratio,
         )
+
         print(
             f"Data partitioned across {cfg.clients.client_num} clients"
             f" and {cfg.val_ratio} of local dataset reserved for validation."

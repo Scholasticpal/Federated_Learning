@@ -12,6 +12,7 @@ import os
 import shutil
 import urllib.request
 from typing import Optional
+import posixpath
 
 import numpy as np
 from sklearn.datasets import load_svmlight_file
@@ -34,6 +35,7 @@ def download_data(dataset_name: Optional[str] = "cod-rna"):
     all_datasets_path = "./dataset"
     if dataset_name:
         dataset_path = os.path.join(all_datasets_path, dataset_name)
+    return_list = []
     match dataset_name:
         case "a9a":
             if not os.path.exists(dataset_path):
@@ -166,8 +168,19 @@ def download_data(dataset_name: Optional[str] = "cod-rna"):
                 os.path.join(dataset_path, "YearPredictionMSD"),
                 os.path.join(dataset_path, "YearPredictionMSD.t"),
             ]
+
+        case "Planet":
+            dataset_path= "./dataset/Planet/20110303/"
+            if not os.path.exists(dataset_path):
+                raise FileNotFoundError("Dataset Not found in the Specified Directory")
+            return_list = []
+            for filename in os.listdir(dataset_path):
+                file_path = os.path.join(dataset_path, filename)
+                if os.path.isfile(file_path):
+                    return_list.append(file_path)
         case _:
             raise Exception("write your own dataset downloader")
+    print("Dataset paths:", return_list)
     return return_list
 
 
@@ -261,3 +274,27 @@ def modify_labels(y_train, y_test):
     y_train[y_train == -1] = 0
     y_test[y_test == -1] = 0
     return y_train, y_test
+
+
+        # case "Bitbrains":
+        #     if not os.path.exists(dataset_path):
+        #         os.makedirs(dataset_path)
+        #         urllib.request.urlretrieve(
+        #             "http://gwa.ewi.tudelft.nl/datasets/gwa-t-12-bitbrains"
+        #             f"{os.path.join(dataset_path, 'Bitbrains_scale')}",
+        #         )
+        #     return_list = [os.path.join(dataset_path, "Bitbrains_scale")]
+        #
+        #
+
+        #taking a file for sample run - my code for a single file
+        # case "Planet":
+        #     if not os.path.exists(dataset_path):
+        #         os.makedirs(dataset_path)
+        #         urllib.request.urlretrieve(
+        #             "./dataset/Planet/20110303/"
+        #             "/regression/75-130-96-12_static_oxfr_ma_charter_com_irisaple_wup",
+        #             f"{os.path.join(dataset_path, '75-130-96-12_static_oxfr_ma_charter_com_irisaple_wup')}",
+        #         )
+        #     return_list = [os.path.join(dataset_path, "75-130-96-12_static_oxfr_ma_charter_com_irisaple_wup")]
+        #

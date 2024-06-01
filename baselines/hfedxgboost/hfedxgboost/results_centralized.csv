@@ -1,0 +1,3 @@
+dataset_name,n_estimators_client,xgb_max_depth,subsample,learning_rate,colsample_bylevel,colsample_bynode,colsample_bytree,alpha,gamma,num_parallel_tree,min_child_weight,result_train,result_test
+cpusmall,10000,3,0.4,0.05,0.5,1,1,5,10,1,5,2.3939439869330346,7.251888159964257
+cpusmall,10000,3,0.4,0.05,0.5,1,1,5,10,1,5,2.3939439869330346,7.251888159964257

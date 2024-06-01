@@ -23,7 +23,7 @@ from hydra.utils import instantiate
 from omegaconf import DictConfig
 from torch.utils.data import DataLoader
 
-from hfedxgboost.models import CNN, fit_xgboost
+from hfedxgboost.models import CNN, fit_xgboost, fit_gru
 from hfedxgboost.utils import single_tree_preds_from_each_client
 
 
@@ -185,9 +185,10 @@ class FlClient(fl.client.Client):
         for dataset in self.trainloader_original:
             data, label = dataset[0], dataset[1]
 
-        tree = fit_xgboost(
-            self.config, self.config.dataset.task.task_type, data, label, 100
-        )
+        # tree = fit_xgboost(
+        #     self.config, self.config.dataset.task.task_type, data, label, 100
+        # )
+        tree = fit_gru(self.config, self.config.dataset.task.task_type, data, label)
         return GetParametersRes(
             status=Status(Code.OK, ""),
             parameters=ndarrays_to_parameters(self.net.get_weights()),
