@@ -1,0 +1,24 @@
+# Federated_Learning
+Summer Research Internship: NIT Karnataka, Surathkal
+a survey comparison between several datasets and RNN models, identifying least mse.
+
+Experimental Setup
+
+Datasets covered: 
+- CPUSmall
+- Bitbrains
+- Planet
+- a9a
+- ijcnn
+- cod_rna
+- abalone
+- space_ga
+- YearPredictionMSD
+
+RNN Models:
+- xgboost
+- GRU
+
+Task Type:
+- Binary
+- Regression
